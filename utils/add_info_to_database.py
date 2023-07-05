@@ -2,15 +2,26 @@ import json
 import psycopg2
 import os
 
+from utils.create_database import create_database
+
 
 def add_info_to_database():
     """Takes json file with vacancies and loads all info into database from this file."""
 
-    connection = psycopg2.connect(host='localhost', database='head_hunter_jobs', user='postgres', password='bubacock')
+    create_database()
 
+    connection = psycopg2.connect(host='localhost', database='head_hunter_jobs', user='postgres', password='bubacock')
     try:
         with connection.cursor() as cursor:
+
             file_path = os.path.join('utils', 'head_hunter_jobs.json')
+
+            cursor.execute("CREATE TABLE vacancies "
+                           " (title varchar(100) NOT NULL,"
+                           " url text,salary_from int,"
+                           " salary_to int,"
+                           " company varchar(100));")
+
             with open(file_path) as json_file:
                 content = json.load(json_file)
 
