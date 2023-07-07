@@ -91,8 +91,9 @@ class DBManager:
             connection.close()
 
     @staticmethod
-    def get_vacancies_with_keyword(keyword):
+    def get_vacancies_with_keyword():
         """Gets a list of all jobs that have 'keyword' in their title."""
+        keyword = input('Enter the keyword: ')
 
         connection = psycopg2.connect(host='localhost', database='head_hunter_jobs', user='postgres',
                                       password='bubacock')

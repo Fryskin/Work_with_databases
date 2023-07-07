@@ -5,7 +5,7 @@ def create_database():
     connection = psycopg2.connect(host='localhost', database='postgres',  user='postgres', password='bubacock')
     connection.autocommit = True
     cursor = connection.cursor()
-
+    cursor.execute('DROP DATABASE IF EXISTS "head_hunter_jobs"')
     cursor.execute('CREATE DATABASE "head_hunter_jobs"'
                    ' WITH'
                    ' OWNER = postgres'

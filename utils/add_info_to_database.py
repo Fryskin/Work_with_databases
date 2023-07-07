@@ -15,12 +15,29 @@ def add_info_to_database():
         with connection.cursor() as cursor:
 
             file_path = os.path.join('utils', 'head_hunter_jobs.json')
+            cursor.execute("CREATE TABLE companies "
+                           " (company text NOT NULL PRIMARY KEY);")
 
             cursor.execute("CREATE TABLE vacancies "
                            " (title varchar(100) NOT NULL,"
                            " url text,salary_from int,"
-                           " salary_to int,"
-                           " company varchar(100));")
+                           " salary_to INT,"
+                           " company text REFERENCES companies(company));")
+
+            with open(file_path) as json_file:
+                content = json.load(json_file)
+
+                uniq_company_name = ''
+                for vacancy in content:
+                    company_name = vacancy['employer']['name']
+                    if company_name == uniq_company_name:
+                        continue
+                    else:
+                        uniq_company_name = company_name
+                    cursor.execute(f"INSERT INTO companies (company) VALUES (%s)",
+                                   [company_name])
+
+                    connection.commit()
 
             with open(file_path) as json_file:
                 content = json.load(json_file)
@@ -44,6 +61,7 @@ def add_info_to_database():
 
                     cursor.execute("INSERT INTO vacancies VALUES (%s, %s, %s, %s, %s)",
                                    (vacancy_title, vacancy_url, salary_from, salary_to, company_name))
+
                     connection.commit()
 
     finally:
